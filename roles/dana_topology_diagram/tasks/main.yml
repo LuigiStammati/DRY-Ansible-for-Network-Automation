@@ -1,0 +1,23 @@
+---
+# tasks file for roles/dana_topology_diagram
+
+- name: Create topology diagram directory if it does not exist
+  file:
+    path: "{{ dana_topology_diagram_dir }}"
+    state: directory
+    mode: '0755'
+  delegate_to: "localhost"
+  run_once: true
+
+
+- name: Generate DOT file from topology links variable
+  template:
+    src: "topology_diagram.j2"
+    dest: "{{ dana_topology_diagram_dir }}/topology_diagram.dot"
+  delegate_to: "localhost"
+  run_once: true
+
+- name: Export topology file in PDF
+  command: "dot -Tpdf {{ dana_topology_diagram_dir }}/topology_diagram.dot -o {{ dana_topology_diagram_dir }}/topology_diagram.pdf"
+  delegate_to: "localhost"
+  run_once: true

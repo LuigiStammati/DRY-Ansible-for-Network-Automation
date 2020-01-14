@@ -1,0 +1,22 @@
+graph topology {
+ // This attribute applies to the graph itself
+ size="10";
+ graph [ranksep="1.7", nodesep="1.7"];
+
+ {% set ns = namespace(nodes = []) %}
+
+ {% for link in topology_links%}
+ {% if link.source.node.name not in ns.nodes %}
+ {{ link.source.node.name.replace("-","_") }} [label="{{ link.source.node.name }}", shape=box, margin=0.4];
+ {% if ns.nodes.append(link.source.node.name)%}{% endif %}
+ {% endif %}
+
+ {% if link.target.node.name not in ns.nodes %}
+ {{ link.target.node.name.replace("-","_") }} [label="{{ link.target.node.name }}", shape=box, margin=0.4];
+ {% if ns.nodes.append(link.target.node.name)%}{% endif %}
+ {% endif %}
+
+ {{ link.source.node.name.replace("-","_") }} -- {{ link.target.node.name.replace("-","_") }} [color=blue, fontsize=7, headlabel="{{ link.target.interface.name }}", taillabel="{{ link.source.interface.name }}"];
+
+ {% endfor %}
+}

@@ -1,0 +1,6 @@
+---
+# defaults file for roles/dana_topology_diagram
+
+topology_diagram_dir: "{{ inventory_dir }}/_topology_diagram"
+
+#topology_links: null
