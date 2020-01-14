@@ -1,0 +1,11 @@
+---
+
+- name: Backup active configurations
+  hosts: "{{ targets | default('all') }}"
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Backup configurations
+      include_role:
+        name: dana_junos_backup_config
+        public: yes
