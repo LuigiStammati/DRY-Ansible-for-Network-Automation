@@ -1,0 +1,23 @@
+# Pycharm
+.idea/
+
+# Mac
+.DS_Store
+
+# local folders and files
+_*
+
+# Generated docs stuff
+ansible*.xml
+.buildinfo
+objects.inv
+.doctrees
+
+# Old compiled python stuff
+*.py[co]
+
+# package building stuff
+build
+
+*.retry
+*.log
