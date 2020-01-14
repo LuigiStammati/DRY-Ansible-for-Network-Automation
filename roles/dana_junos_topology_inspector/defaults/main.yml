@@ -1,0 +1,15 @@
+---
+# defaults file for roles/dana_junos_topology_inspector
+
+# A group name. Only links connecting devices of this group will be discovered and returned
+group_to_inspect: "all"
+
+device_filter: null
+
+# A list of group names. If provided, each group will be processed to figure out the links connecting the member devices
+group_list_to_inspect: null
+
+consider_aggregate: yes
+
+# Seconds to wait after enabling LLDP before retrieving neighbours info
+lldp_convergence_time: 5

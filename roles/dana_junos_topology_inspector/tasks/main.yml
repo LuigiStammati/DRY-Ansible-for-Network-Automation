@@ -1,0 +1,98 @@
+---
+# tasks file for roles/dana_junos_topology_inspector
+
+- name: Retrieve interfaces
+  junos_command:
+    commands: show interfaces terse | display json
+  register:
+    show_interface_response
+
+
+- name: Select interfaces with link up and type 'ge', 'xe', 'et' or 'ae' (excluding bundle's constituents)
+  set_fact:
+    active_interfaces: "{{ show_interface_response | filter_interface_terse(admin_status='up', link_status='up', interface_start_with=['xe', 'ge', 'et', 'ae'], exclude_protocols=['aenet']) }}"
+
+
+- name: Initialize counter for further rollback
+  set_fact:
+    rollback_counter: 0
+
+
+- name: Enable LLDP, discover neighbors and retrieve links
+  block:
+    - name: Create a dummy unit 0 on each active interface
+      juniper_junos_config:
+        template: "{{ role_path }}/templates/dummy_unit_0.j2"
+        load: "set"
+        # The description is removed if present, otherwise it overlaps the remove interface name
+        ignore_warning: yes
+        vars:
+          active_interfaces: "{{ active_interfaces }}"
+      register: dummy_unit_response
+
+
+    - name: Update rollback counter if dummy unit has been configured
+      set_fact:
+        rollback_counter: "{{ rollback_counter | int + 1 }}"
+      when: dummy_unit_response is changed
+
+
+    - name: Enable LLDP on all interfaces
+      juniper_junos_config:
+        template: "{{ role_path }}/templates/lldp.j2"
+        load: "set"
+        vars:
+          # vars must always be passed otherwise it complains
+          dummy: ""
+      register: enable_lldp_response
+
+    - name: Update rollback counter if LLDP has been configured
+      set_fact:
+        rollback_counter: "{{ rollback_counter | int + 1 }}"
+      when: enable_lldp_response is changed
+
+    - name: Wait for LLDP to converge
+      wait_for:
+        timeout: "{{ lldp_convergence_time }}"
+
+    - name: Get LLDP neighbors information
+      juniper_junos_rpc:
+        rpcs: get-lldp-neighbors-information
+        format: json
+      register: lldp_response
+      retries: 3
+      delay: 10
+      until: lldp_response['parsed_output']['lldp-neighbors-information'][0].keys()|length > 0
+
+
+    - name: Extract links from LLDP response
+      set_fact:
+        lldp_topology_links: "{{ lldp_response.parsed_output | extract_links(inventory_hostname_short, consider_aggregate|bool) }}"
+
+
+    - name: Collect topology links connecting the devices of the provided group
+      # 1. create a list of lists, each inner list is the links variable computed by each individual host in the underlay group
+      # 2. pass the list to get_group_links filter
+      set_fact:
+        topology_links: "{{ groups[group_to_inspect]|map('extract', hostvars, 'lldp_topology_links') | list | get_group_links(groups[group_to_inspect], device_filter, consider_aggregate|bool ) }}"
+
+
+    - name: Collect topology links connecting the devices of the provided group for each group in the privided list
+      set_fact:
+        topology_links_per_group: "{{ groups['all']|map('extract', hostvars, 'lldp_topology_links') | list | get_multiple_groups_links(group_list_to_inspect, groups, device_filter, consider_aggregate|bool ) }}"
+      when: group_list_to_inspect != None
+
+
+    - name: Collect device interfaces whose endpoints belong to the provided group
+      set_fact:
+        # Interfaces of the current hostname which are connected to any of the device of the topology link group
+        topology_interfaces: "{{ topology_links | select_group_interfaces(inventory_hostname_short) }}"
+
+  always:
+    - debug:
+        var: rollback_counter
+
+    - name: Cleanup LLDP config and dummy unit 0
+      juniper_junos_config:
+        rollback: "{{ rollback_counter }}"
+      when: rollback_counter|int > 0
