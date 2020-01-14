@@ -1,0 +1,13 @@
+---
+
+- name: Create backup directory if it does not exist
+  file:
+    path: "{{ backup_config_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Retrieve and save configuration
+  juniper_junos_config:
+    retrieve: "committed"
+    format: "text"
+    dest: "{{ backup_config_dir }}/{{ config_label + '.' if config_label != None else '' }}{{ lookup('pipe','date \"+%Y-%m-%d_%H%M\"') + '.' if include_timestamp|bool else '' }}{{ inventory_hostname }}.conf"
