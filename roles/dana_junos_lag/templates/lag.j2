@@ -1,0 +1,29 @@
+chassis {
+    aggregated-devices {
+        ethernet {
+            device-count {{ topology_links_per_group.keys() | count }};
+        }
+    }
+}
+
+
+interfaces {
+{% for bundle_group_name, bundle_links in topology_links_per_group.items() %}
+
+{% for link in bundle_links %}
+{% set ns = namespace(endpoint_label = 'source' if link.source.node.name == inventory_hostname_short else 'target') %}
+
+{{ link[ns.endpoint_label].interface.name }} {
+
+{# Use the number at the end of the bundle name as aggregated interface number#}
+   ether-options {
+       802.3ad ae{{ bundle_group_name.split('lag_bundle_')[1] }};
+   }
+}
+{% endfor %}
+
+ae{{ bundle_group_name.split('lag_bundle_')[1] }} {
+    unit 0;
+}
+{% endfor %}
+}

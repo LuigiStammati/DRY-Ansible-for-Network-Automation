@@ -1,0 +1,4 @@
+---
+# defaults file for roles/junos_aggregated_links
+
+lag_config_dir: "{{ inventory_dir }}/_lag_configs"

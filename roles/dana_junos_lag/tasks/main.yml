@@ -1,0 +1,36 @@
+---
+# tasks file for roles/junos_aggregated_links
+
+- name: Retrieve inventory groups representing lag bundles
+  set_fact:
+    lag_bundle_groups: "{{ group_names | filter_bundle_groups }}"
+
+
+- name: Retrieve lag links and generate configurations
+  block:
+  - name: Create aggregated links configuration directory if it does not exist
+    file:
+      path: "{{ lag_config_dir }}"
+      state: directory
+      mode: '0755'
+
+  - name: Retrive links connecting each bundle
+    include_role:
+      # It will populate the variable topology_links_per_group
+      name: dana_junos_topology_inspector
+    vars:
+      group_list_to_inspect: "{{ lag_bundle_groups }}"
+      consider_aggregate: no
+
+
+  - name: Render LAG configuration template
+    template:
+      src: "lag.j2"
+      dest: "{{ lag_config_dir }}/lag.{{ inventory_hostname }}.conf"
+
+  # Run the block only if lag inventory groups were provided
+  when: lag_bundle_groups|length > 0
+
+- debug:
+    msg: "No inventory groups representing LAGs were found. To configure an aggregate ae<n> on devices connected with multiple links, create a group 'lag_bundle_x in the inventory file containing the devices participating in the bundle'"
+  when: lag_bundle_groups|length <= 0
