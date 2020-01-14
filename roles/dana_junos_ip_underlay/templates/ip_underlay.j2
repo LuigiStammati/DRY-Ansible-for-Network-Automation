@@ -1,0 +1,20 @@
+interfaces {
+{% for link in topology_own_links %}
+
+{% set ns = namespace(local_endpoint_label = 'source' if link.source.node.name == inventory_hostname_short else 'target',
+neighbor_endpoint_label = 'target' if link.source.node.name == inventory_hostname_short else 'source')
+%}
+
+{{ link[ns.local_endpoint_label].interface.name }} {
+    {% if include_interface_description|bool %}
+    description to-{{link[ns.neighbor_endpoint_label].node.name}}
+    {% endif %}
+    mtu {{ underlay_mtu }};
+    replace: unit {{ link[ns.local_endpoint_label].interface.unit }} {
+        family inet {
+            address {{ link[ns.local_endpoint_label].interface.ip_address }};
+        }
+    }
+}
+{% endfor %}
+}

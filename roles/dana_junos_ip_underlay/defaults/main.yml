@@ -1,0 +1,14 @@
+---
+# defaults file for dana_junos_ip_underlay
+
+ip_subnet_start: "10.100.0.0/31"
+underlay_mtu: 9216
+underlay_group: "ip_underlay"
+ip_underlay_config_dir: "{{ inventory_dir }}/_ip_underlay_configs"
+
+# If yes, configure a description for each underlay interface specifying the neighbor name
+include_interface_description: yes
+
+
+
+

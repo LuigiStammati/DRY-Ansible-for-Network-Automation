@@ -1,0 +1,34 @@
+---
+# tasks file for dana_junos_ip_underlay
+
+- name: Create ip underlay configuration directory if it does not exist
+  file:
+    path: "{{ ip_underlay_config_dir }}"
+    state: directory
+    mode: '0755'
+
+
+- name: Retrive underlay links
+  include_role:
+    # It will populate the variable topology_links
+    name: dana_junos_topology_inspector
+  vars:
+    group_to_inspect: "{{ underlay_group }}"
+
+
+- name: Assign IP addresses to underlay links
+  # 1. create a list of lists, each inner list is the links variable computed by each individual host in the underlay group
+  # 2. pass the list to assign_underlay_ip filter
+  set_fact:
+    topology_links: "{{ topology_links | list | assign_underlay_ip(ip_subnet_start) }}"
+
+
+- name: Filter device's own links
+  set_fact:
+    topology_own_links: "{{ topology_links | list | filter_own_links(inventory_hostname_short) }}"
+
+
+- name: Render underlay ip configuration template
+  template:
+    src: "ip_underlay.j2"
+    dest: "{{ ip_underlay_config_dir }}/ip_underlay.{{ inventory_hostname }}.conf"
