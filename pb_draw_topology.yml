@@ -1,0 +1,28 @@
+---
+
+- name: Discover and draw the network topology
+  hosts: "{{ targets | default('all') }}"
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Inspect network topology
+      include_role:
+        name: dana_junos_topology_inspector
+        public: yes
+        # Apply tasks required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+
+    - name: Draw topology diagram and export in PDF
+      include_role:
+        name: dana_topology_diagram
+        public: yes
+        # Apply tasks required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
