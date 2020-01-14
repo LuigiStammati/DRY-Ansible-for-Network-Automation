@@ -1,0 +1,33 @@
+---
+
+- name: Generate and provision LAG configurations
+  hosts: "{{ targets | default('all') }}"
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Generate LAG configurations
+      include_role:
+        name: dana_junos_lag
+        public: yes
+        # Apply tasks required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+
+    - name: Push LAG configuration
+      include_role:
+        name: dana_junos_push_config
+        public: yes
+        # Apply tasks required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - never
+            - push_config
+      vars:
+        built_configs_dir: "{{ lag_config_dir }}"
+      tags:
+        - never
+        - push_config
+
