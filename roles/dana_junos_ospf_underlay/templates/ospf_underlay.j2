@@ -1,0 +1,14 @@
+protocols {
+    ospf {
+        area {{ ospf_area }} {
+            interface lo0.0 passive;
+            {% for interface in topology_interfaces%}
+
+            interface {{ interface.name }}.0 {
+            interface-type p2p;
+            }
+
+            {% endfor %}
+        }
+    }
+}

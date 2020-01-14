@@ -1,0 +1,6 @@
+---
+# defaults file for roles/dana_junos_ospf_underlay
+
+ospf_underlay_config_dir: "{{ inventory_dir }}/_ospf_underlay_configs"
+underlay_group: "ip_underlay"
+ospf_area: "0.0.0.0"

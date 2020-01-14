@@ -1,0 +1,22 @@
+---
+# tasks file for roles/dana_junos_ospf_underlay
+
+- name: Create ospf underlay configuration directory if it does not exist
+  file:
+    path: "{{ ospf_underlay_config_dir }}"
+    state: directory
+    mode: '0755'
+
+
+- name: Provision the IP Underlay for OSPF
+  include_role:
+    # It will populate a variable topology_interfaces, then used to render the OSPF template
+    name:  dana_junos_ip_underlay
+  vars:
+    ip_underlay_config_dir: "{{ ospf_underlay_config_dir }}"
+
+
+- name: Render OSPF configuration template
+  template:
+    src: "ospf_underlay.j2"
+    dest: "{{ ospf_underlay_config_dir }}/ospf_underlay.{{ inventory_hostname }}.conf"
