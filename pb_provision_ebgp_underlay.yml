@@ -1,0 +1,77 @@
+---
+
+- name: Generate and provision EBGP underlay configurations
+  hosts: "{{ targets | default('ip_underlay') }}"
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Generate LAG configuration if needed
+      include_role:
+        name: dana_junos_lag
+        public: yes
+        # Apply tasks required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+
+    - name: Push LAG configuration
+      include_role:
+        name: dana_junos_push_config
+        public: yes
+        # Apply tasks required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      vars:
+        built_configs_dir: "{{ lag_config_dir }}"
+        prefix_filter_label: "lag"
+      tags:
+        - always
+      # lag_bundle_groups is determined by dana_junos_lag role
+      when: lag_bundle_groups|length > 0
+
+    - name: Generate IP and EBGP underlay configuration
+      include_role:
+        name: dana_junos_ebgp_underlay
+        public: yes
+        # Apply tasks required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+
+    - name: Push IP underlay configuration
+      include_role:
+        name: dana_junos_push_config
+        public: yes
+        # Apply tasks required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - never
+            - push_config
+      vars:
+        built_configs_dir: "{{ ebgp_underlay_config_dir }}"
+        prefix_filter_label: "ip_underlay"
+        loading_option: "replace"
+      tags:
+        - never
+        - push_config
+
+    - name: Push EBGP underlay configuration
+      include_role:
+        name: dana_junos_push_config
+        public: yes
+        # Apply tasks required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - never
+            - push_config
+      vars:
+        built_configs_dir: "{{ ebgp_underlay_config_dir }}"
+        prefix_filter_label: "ebgp_underlay"
+      tags:
+        - never
+        - push_config
