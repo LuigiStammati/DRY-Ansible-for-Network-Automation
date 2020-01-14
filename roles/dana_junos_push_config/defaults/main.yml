@@ -1,0 +1,14 @@
+---
+# defaults file for roles/dana_junos_push_config
+
+netconf_port: 830
+
+# The folder to look up to find the config file
+built_configs_dir: "{{ inventory_dir }}/_built_configs"
+
+loading_option: "merge"
+telnet_user: "root"
+telnet_password: ""
+
+# Lookup config file names that start with this prefix if provided
+prefix_filter_label: null

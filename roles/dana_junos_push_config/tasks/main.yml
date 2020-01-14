@@ -1,0 +1,40 @@
+---
+# tasks file for roles/dana_junos_push_config
+
+- name: Find config file to be loaded
+  find:
+    paths: "{{ built_configs_dir }}"
+    patterns: "{{ prefix_filter_label if prefix_filter_label != None else '' }}*{{ inventory_hostname }}.conf"
+  register: config_file
+
+- name: Print the config file
+  debug:
+    var: config_file.files[0].path
+
+- name: Check netconf connectivity
+  wait_for:
+    host: "{{ inventory_hostname }}"
+    port: "{{ netconf_port }}"
+    timeout: 5
+  register: netconf_status_response
+  ignore_errors: True
+
+- name: Load configuration from file via netconf over ssh and commit
+  juniper_junos_config:
+    load: "{{ loading_option }}"
+    src: "{{ config_file.files[0].path }}"
+  register: ssh_load_response
+  when: netconf_status_response is succeeded
+
+# If host is not reachable via ssh, try with telnet
+- name: Load configuration from file via Telnet and commit
+  juniper_junos_config:
+    host: "{{ inventory_hostname }}-con"
+    mode: "telnet"
+    user: "{{ telnet_user }}"
+    password: "{{ telnet_password }}"
+    load: "{{ loading_option }}"
+    src: "{{ config_file.files[0].path }}"
+  register: response
+  when: netconf_status_response is failed or ssh_load_response is failed
+
