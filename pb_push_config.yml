@@ -1,0 +1,11 @@
+---
+
+- name: Push Junos configurations from the specified folder
+  hosts: "{{ targets | default('all') }}"
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Load and commit configurations
+      include_role:
+        name: dana_junos_push_config
+        public: yes
