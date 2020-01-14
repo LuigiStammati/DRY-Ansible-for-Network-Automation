@@ -1,0 +1,52 @@
+
+
+protocols {
+bgp {
+group ebgp-underlay {
+    type external;
+    family inet {
+        unicast;
+    }
+    multipath {
+    multiple-as;
+    }
+    export pl-local_loopback;
+    local-as {{ local_asn }};
+
+    {% for link in topology_own_links %}
+    {% set ns = namespace(local_endpoint_label = 'source' if link.source.node.name == inventory_hostname_short else 'target',
+    neighbor_endpoint_label = 'target' if link.source.node.name == inventory_hostname_short else 'source')
+    %}
+        neighbor {{ link[ns.neighbor_endpoint_label].interface.ip_address.split('/')[0] }} {
+        description {{ link[ns.neighbor_endpoint_label].node.name }};
+        peer-as {{ link[ns.neighbor_endpoint_label].node.asn }};
+    }
+    {% endfor %}
+        }
+    }
+}
+
+policy-options {
+    policy-statement pl-local_loopback {
+        term 1 {
+            from {
+                protocol direct;
+                interface lo0.0;
+            }
+            then accept;
+        }
+    }
+
+    policy-statement ECMP {
+        then {
+            load-balance per-packet;
+        }
+    }
+}
+
+
+routing-options {
+    forwarding-table {
+        export ECMP;
+    }
+}

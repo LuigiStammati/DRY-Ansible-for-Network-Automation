@@ -1,0 +1,10 @@
+---
+# defaults file for roles/dana_junos_ebgp_underlay
+
+ebgp_underlay_config_dir: "{{ inventory_dir }}/_ebgp_underlay_configs"
+underlay_group: "ip_underlay"
+
+# The first Autonomous System number to be assigned. The other ASNs will be assigned incrementally
+asn_start: "4200000100"
+
+

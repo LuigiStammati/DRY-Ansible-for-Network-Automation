@@ -1,0 +1,37 @@
+---
+# tasks file for roles/dana_junos_ebgp_underlay
+
+- name: Create EBGP underlay configuration directory if it does not exist
+  file:
+    path: "{{ ebgp_underlay_config_dir }}"
+    state: directory
+    mode: '0755'
+
+
+- name: Generate IP Underlay for EBGP
+  include_role:
+    # It will generate the ip addresses and populate a variable topology_links with all the links underlay ip addresses
+    # and topology_own_links (which filters only the device links)
+    name:  dana_junos_ip_underlay
+  vars:
+    ip_underlay_config_dir: "{{ ebgp_underlay_config_dir }}"
+
+
+- name: Populate links with ASNs
+  set_fact:
+    topology_links: "{{ topology_links | list | assign_underlay_asn(asn_start) }}"
+
+
+- name: Filter device's own links
+  set_fact:
+    topology_own_links: "{{ topology_links | list | filter_own_links(inventory_hostname_short) }}"
+
+- name: Retrieve the local ASN
+  set_fact:
+    local_asn: "{{ topology_own_links | list | get_local_asn(inventory_hostname_short) }}"
+
+
+- name: Render EBGP configuration template
+  template:
+    src: "ebgp_underlay.j2"
+    dest: "{{ ebgp_underlay_config_dir }}/ebgp_underlay.{{ inventory_hostname }}.conf"
