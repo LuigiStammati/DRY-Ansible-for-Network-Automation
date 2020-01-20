@@ -3,15 +3,14 @@
 Inspect, sketch, provision and backup your Junos OS network 
 
 Ansible is cool for Network Automation! However... very often before running a playbook you are requested to manually 
-write down long YAML files to represent every single link of your topology...Alternatively, you usually must pre-enable
- some sort of discovery protocol on the box, such as LLDP, on every device involved... 
+write down long YAML files to represent every single link of your topology...
 is that really the best Automation we can perform?
 
 __DRY Ansible for Network Automation (DANA)__ is a collection of Ansible roles and playbooks that allow you to carry out 
 complex network provisioning operations on devices running Junos OS, without requiring you to manually describe the 
 details of your topology, or pre-enable any discovery protocol by yourself.
 
-This is achieved by leveraging a core topology inspection custom role that automatically discovers and represents your 
+This is achieved by leveraging a topology inspection custom role that automatically discovers and represents your 
 network while only requiring you to specify a target group name in the inventory file. 
 
 
@@ -26,13 +25,13 @@ Complete list of Features:
 * Sketch topology diagram and export as PDF
 * Generate and provision OSPF underlay configuration 
 * Generate and provision EBGP underlay configuration 
-* Generate and provision LAG configuration 
+* Generate and provision multiple LAGs configuration 
 * Backup all active configurations
 
 For further details, please check the usage section below
 
 
-## Quick Example - EBGP Underlay
+## Quick Example - EBGP Underlay Provisioning
 
 Suppose you spent few hours in the lab cabling up the following network 
 (a typical Data Center _Clos_ topology in this example).
@@ -75,19 +74,28 @@ part of the fabric
 
 ![test](docs/images/dana_quick_example_final_topology.png)
 
-The playbook automatically inspects the topology to find out interfaces and neighbours for each device of 
-the ip_underlay group. For more details about how the discovery is performed, you can check the documentation
- [dana_junos_topology_inspector](roles/dana_junos_topology_inspector/README.md). 
+What's just happened:
 
-You don't need to enable LLDP: to carry out the discovery, the role configures it automatically and rollbacks the changes
-after retrieving all the information needed.
- 
-Finally, it generates the IP and EBGP configuration for each device, stores the 
-files in the _\_ebgp_underlay_config_ folder in your inventory directory and performs a _load merge + commit_ operation
- on the remote targets.
+The playbook has automatically enabled LLDP on all the interfaces and used the information retrieved to create a consistent 
+representation of the links connecting the devices that are members of `ip_underlay`. 
+
+Devices that are not part of the group have been safely excluded. 
+Moreover, LLDP has been rolled back from the configuration to clean up any trace.
+
+This operation is performed by the custom role [dana_junos_topology_inspector](roles/dana_junos_topology_inspector/README.md). 
+
+Then, it generated the IP and EBGP configuration for each device in the `ip_underlay` group. Configuration files are
+stored in the _\_ebgp_underlay_config_ folder in the inventory directory. 
+
+Like before, there is a custom role for each individual operation. Check [dana_junos_ip_underlay](roles/dana_junos_ip_underlay)
+and [dana_junos_ebgp_underlay](roles/dana_junos_ebgp_underlay) for more details.
+
+Finally, it pushed the configurations to the remote devices. The custom role responsible this time is 
+[dana_junos_push_config](roles/dana_junos_push_config)
+which relies on the official Juniper module _juniper_junos_config_ to manage remote configuration changes.
 
 
-In this example, the first leaf device qfx5120-1 will be automatically provisioned with the following configuration:
+The first leaf device qfx5120-1 got provisioned with the following configuration:
 
 ```
 interfaces {
@@ -166,6 +174,7 @@ routing-options {
 }
 ```
 
+
 ## Installation 
 
 ### Virtualenv
@@ -200,6 +209,12 @@ across different playbooks. The project already exposes a variety of playbooks.
 In the following sections, we describe the operations available and the corresponding playbook to employ.
 
 ### Sketch Topology Diagram
+
+What it does 
+
+Input strictly required 
+
+
 
 This playbook first carries out a topology inspection using the role 
 [dana_junos_topology_inspection](roles/dana_junos_topology_inspector/README.md). 
