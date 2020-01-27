@@ -1,20 +1,18 @@
-# DANA - DRY Ansible for Network Automation
+# DRY Ansible for Network Automation
 
-Inspect, sketch, provision and backup your Junos OS network 
+The fewer variables you need to care about the easier Automation you can carry out!
 
-Ansible is cool for Network Automation! However... very often before running a playbook you are requested to manually 
-write down long YAML files to represent every single link of your topology...
-is that really the best Automation we can perform?
-
-__DRY Ansible for Network Automation (DANA)__ is a collection of Ansible roles and playbooks that allow you to carry out 
-complex network provisioning operations on devices running Junos OS, without requiring you to manually describe the 
-details of your topology, or pre-enable any discovery protocol by yourself.
-
-This is achieved by leveraging a topology inspection custom role that automatically discovers and represents your 
-network while only requiring you to specify a target group name in the inventory file. 
+__DRY Ansible for Network Automation (DANA)__ is a collection of Ansible roles and playbooks that allow you to provision,
+ sketch and backup your Junos OS network, with no need of manually describing the details of your topology, or pre-enable any 
+ discovery protocol by hand.
+ 
+This is achieved by leveraging a topology inspection role that automatically discovers and represents every links, 
+nodes and interfaces of a particular group in the inventory file. 
+In this way, you don't have to write down a separate YAML file to represent the target topology.
 
 
 Don't Repeat Yourself (DRY) is the core paradigm driving this project:
+
 * __it is DRY__ : by breaking down atomic operations into Ansible roles that are then conveniently combined and reused 
 across easily consumable playbooks;
 * __it keeps you DRY__: by freeing you from providing anything that can be automatically figured out about 
@@ -33,70 +31,57 @@ For further details, please check the usage section below
 
 ## Quick Example - EBGP Underlay Provisioning
 
-Suppose you spent few hours in the lab cabling up the following network 
-(a typical Data Center _Clos_ topology in this example).
+Suppose you spent few hours in the lab cabling up the following network topology for testing purposes.
 
  ![test](docs/images/dana_quick_example_init_topology.png)
  
-The devices only got the default configuration, which includes management and loopback interfaces.  
+The devices only got your Lab default configuration, which includes management and loopback interfaces.  
  
 Your ultimate goal is to configure an IP Fabric by provisioning:
-* the underlay IP connectivity on all fabric links, 
+* The underlay IP connectivity on all fabric links, 
 * EBGP as underlay routing protocol with one private ASN per device to redistribute the loopback addresses across 
 the fabric,
-* load balancing 
+* Load balancing 
 
 The playbook _pb_provision_ebgp_underlay_ is what you need:
 
-1. Create a group called `ip_underlay` in your inventory file (_hosts.ini_) in which you include the devices that are 
-part of the fabric
+1. Create a group called `ip_underlay` in your inventory file (_hosts.ini_) in which you include the devices that must be 
+part of the fabric (this will be the only input from your side)
 
-    ```
-    # hosts.ini
- 
-    [ip_underlay]
-    qfx5120-1
-    qfx5120-2 
-    qfx5120-3
-    qfx5120-4
-    qfx5200-1
-    qfx5200-2
-    ```
-2. Run the playbook `pb_provision_ebgp_underlay.yml`
-    ```
-    ansible-playbook pb_provision_ebgp_underlay.yml -i hosts.ini -t push_config"
-    ```
-    Note: The tag `push_config` just tells the playbook to both generate and commit the configuration to the remote devices. 
-    You can omit this tag if you only want to generate the files locally. They will be stored in a folder 
-    _\_ebgp_underlay_config_ in your inventory directory.
+```
+# hosts.ini
+
+[ip_underlay]
+qfx5120-1
+qfx5120-2 
+qfx5120-3
+qfx5120-4
+qfx5200-1
+qfx5200-2
+```
+2. Run the playbook:
+```
+ansible-playbook pb_provision_ebgp_underlay.yml -i hosts.ini -t push_config
+```
+The tag `push_config` just tells the playbook to both generate and commit the configuration to the remote devices. 
+You can omit this tag if you only want to generate the files locally. They will be stored in a folder 
+_\_ebgp_underlay_config_ in your inventory directory.
 
 3. Enjoy the final result!
 
 ![test](docs/images/dana_quick_example_final_topology.png)
 
-What's just happened:
+A quick summary of what just happened:
 
-The playbook has automatically enabled LLDP on all the interfaces and used the information retrieved to create a consistent 
-representation of the links connecting the devices that are members of `ip_underlay`. 
+1. Links and neighbours connecting the members of the ip_underlay group have been automatically discovered
+2. Links to devices outside the group have been safely ignored 
+3. IP addresses, interfaces, ASN have been automatically generated from default seed values (that can be customised) for each
+device involved, according with the topology previously discovered 
 
-Devices that are not part of the group have been safely excluded. 
-Moreover, LLDP has been rolled back from the configuration to clean up any trace.
+You can find out more about how the discovery is carried out and how you can tune the default variables to suite your 
+needs in the Usage section of the documentation below.
 
-This operation is performed by the custom role [dana_junos_topology_inspector](roles/dana_junos_topology_inspector/README.md). 
-
-Then, it generated the IP and EBGP configuration for each device in the `ip_underlay` group. Configuration files are
-stored in the _\_ebgp_underlay_config_ folder in the inventory directory. 
-
-Like before, there is a custom role for each individual operation. Check [dana_junos_ip_underlay](roles/dana_junos_ip_underlay)
-and [dana_junos_ebgp_underlay](roles/dana_junos_ebgp_underlay) for more details.
-
-Finally, it pushed the configurations to the remote devices. The custom role responsible this time is 
-[dana_junos_push_config](roles/dana_junos_push_config)
-which relies on the official Juniper module _juniper_junos_config_ to manage remote configuration changes.
-
-
-The first leaf device qfx5120-1 got provisioned with the following configuration:
-
+The leaf device qfx5120-1 in this example will be provisioned with the following configuration:
 ```
 interfaces {
     xe-0/0/1 {
@@ -186,20 +171,20 @@ describe the installation using Anaconda:
 3. Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) 
 4. Create a virtual environment with the requested Python version
 
-    ```buildoutcfg
-    conda create --name dry_ansible_venv python=3.7
-    ```
+```
+conda create --name dry_ansible_venv python=3.7
+```
 5. Activate the virtual environment 
     
-    ```buildoutcfg
-    conda activate dry_ansible_venv
-    ```
+```
+conda activate dry_ansible_venv
+```
 
 6. Install the requirements 
     
-    ```buildoutcfg
-    pip install -r requirements.txt
-    ```
+```
+pip install -r requirements.txt
+```
 
 ## Usage
 
@@ -209,11 +194,6 @@ across different playbooks. The project already exposes a variety of playbooks.
 In the following sections, we describe the operations available and the corresponding playbook to employ.
 
 ### Sketch Topology Diagram
-
-What it does 
-
-Input strictly required 
-
 
 
 This playbook first carries out a topology inspection using the role 
@@ -248,30 +228,30 @@ To target a subset of devices:
 
 1. Create a group in your inventory file
 
-    ```
-    # invenotry/hosts.ini 
-    
-    [my_subset]
-    router-1
-    router-2
-    router-3
-    
-    ```
+```
+# invenotry/hosts.ini 
+
+[my_subset]
+router-1
+router-2
+router-3
+
+```
 
 2. Set the variable `grouo_to_inspect` to the group name just created. 
 This will make sure that only links connecting the members of the group will be discovered:
 
-    ```yaml
-    # invenotry/group_vars/all.yml
-    
-    group_to_inspect: my_subset
-    
-    ```
+```yaml
+# invenotry/group_vars/all.yml
+
+group_to_inspect: my_subset
+
+```
 3. Run the playbook targeting the desired group
     
-    ```
-    ansible-playbook pb_draw_topology.yml -i inventory/hosts.ini -e "targets=my_subset"
-    ```
+```
+ansible-playbook pb_draw_topology.yml -i inventory/hosts.ini -e "targets=my_subset"
+```
 
 ### Provision IP Underlay 
 
@@ -298,9 +278,6 @@ inventory
 │   ├── ip_underlay.router-2.conf
 │   └── ip_underlay.router-3.conf
 ```
-
-
-
 
 
 ### Provision OSPF Underlay 
