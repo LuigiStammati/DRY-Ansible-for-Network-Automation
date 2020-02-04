@@ -55,12 +55,8 @@ will be included in the result, ignoring any possible aggregate bundle configure
 Dependencies
 ------------
 
-Roles:
-
-* Juniper.junos
-
-Example of Usage
-----------------
+* __Juniper.junos__ role. Already included in the _meta_, 
+no need to import this role at the playbook level.
 
 
 License

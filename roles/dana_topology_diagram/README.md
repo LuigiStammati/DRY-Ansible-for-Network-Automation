@@ -1,7 +1,7 @@
 Topology Diagram
 =========
 
-This role draws the topology diagram and makes it available in a PDF file. 
+This role draws a sketch of the topology diagram and makes it available in a PDF file. 
 
 It expects a variable representing the topology nodes and links as input.
 
@@ -13,21 +13,57 @@ You need to install [graphviz](http://www.graphviz.org/download/) on the Ansible
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* __topology_diagram_dir__ (default `"{{ inventory_dir }}/_topology_diagram"`): The path to
+the directory in which the PDF file will be saved. If the folder specified does 
+not exist, it will be automatically created.
+* __topology_links__: a data structure representing the links of the topology to be drawn. 
+An example in JSON format of the expected structure:
 
+    ```
+    [
+        {
+            source: {
+                node: {
+                    name: str
+                }
+                interface: {
+                    name: str,
+                }
+            },
+            target: {
+                node: {
+                    name: str
+                }
+                interface: {
+                    name: str
+                }
+            }
+        },
+        {
+            source: {
+                node: {
+                    name: str
+                }
+                interface: {
+                    name: str,
+                }
+            },
+            target: {
+                node: {
+                    name: str
+                }
+                interface: {
+                    name: str
+                }
+            }
+        } 
+            
+    ]
+    ```
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+None
 
 License
 -------

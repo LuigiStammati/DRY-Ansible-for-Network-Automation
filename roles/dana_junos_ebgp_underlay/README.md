@@ -1,31 +1,38 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+This role generates Junos configurations for EBGP underlay connectivity.
+
+The role will automatically:
+
+1. Discover the links connecting the devices in the underlay group,  
+2. Generate the underlay IP address configurations,
+3. Assign a unique ASN to each device and generate the EBGP configurations to establish BGP peering over the physical 
+interfaces and redistribute the loopback interface addresses.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+None
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* `ebgp_underlay_config_dir` (default `"{{ inventory_dir }}/_ebgp_underlay_configs"`): The path to
+the directory in which configuration files will be saved. If the folder specified does 
+not exist, it will be automatically created.
+* `underlay_group` (default `"ip_underlay"`): A group name that should also be defined in the inventory file. 
+Only devices that are members of this group will be discovered and configured.
+* `asn_start` (default `"4200000100"`): the first Autonomous System Number (ASN) that will be assigned to the first 
+device. Further ASNs will be picked incrementally from this value. The default value represents a 32-bits ASN. However,
+ the variable is just a string, therefore it can be also used to represent a 16-bit ASN e.g.`"65000"`
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+roles:
 
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+* [dana_junos_ip_underlay](../dana_junos_ip_underlay/README.md)
 
 License
 -------
@@ -35,4 +42,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Luigi Stammati

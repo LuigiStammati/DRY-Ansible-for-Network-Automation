@@ -19,8 +19,8 @@ Role Variables
 * `ip_subnet_start` (default `"10.100.0.0/31"`): The subnet used for the first link. 
 For each further link the next subnet will be incrementally picked 
 * `underlay_mtu` (default `9216`): The MTU the interface will be configured with
-* `underlay_group` (default `"ip_underlay"`): The name of the group used to configure 
-the underlay. This group must be defined in the inventory file.
+* `underlay_group` (default `"ip_underlay"`): A group name that should also be defined in the inventory file. 
+Only devices that are members of this group will be discovered and configured.
 * `ip_underlay_config_dir` (default `"{{ inventory_dir }}/_ip_underlay_configs"`): The path to
 the directory in which configuration files will be saved. By default, it's a folder
 called `ip_underlay_configs` within the inventory file. If the folder specified does 
@@ -36,9 +36,6 @@ Dependencies
 roles:
 
 * [dana_junos_topology_inspector](../dana_junos_topology_inspector/README.md)
-
-Example Playbook
-----------------
 
 
 License
