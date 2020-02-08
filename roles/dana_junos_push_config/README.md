@@ -4,11 +4,11 @@ Junos Push Config
 This Ansible role provides a quick way to push a configuration file to a juniper device.
 
 You only specify the folder that contains the configuration files. This role will first search for a configuration file 
-that matches the target device name (file name must end with _hostname_.conf). Finally, it will load and commit 
+that matches the target device name (file name must end with _hostname_.conf). Then, it will load and commit 
 (by default with the merge option) the configuration to the remote host. 
 
-
-If more than one file match the device name, only one will be used. 
+Moreover, if pushing the configuration via SSH fails, the role automatically attempts to load and commit via Telnet, 
+using different credentials that can be customized. 
 
 
 Requirements

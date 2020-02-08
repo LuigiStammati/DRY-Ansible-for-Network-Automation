@@ -1,12 +1,12 @@
 # DRY Ansible for Network Automation
 
 __DRY Ansible for Network Automation (DANA)__ is a collection of Ansible roles and playbooks that allow you to provision,
- sketch and backup your Junos OS network, with no need of manually describing the details of your topology, or pre-enable any 
- discovery protocol by hand.
+ sketch and backup your Junos OS network without the need of manually describing the details of your topology.
  
 This is achieved by leveraging a topology inspection role that automatically discovers and represents every links, 
 nodes and interfaces of a particular group in the inventory file. 
 In this way, you don't have to write down a separate YAML file to represent the target topology.
+
 
 
 Don't Repeat Yourself (DRY) is the core paradigm driving this project:
@@ -18,11 +18,12 @@ your network topology.
 
 Complete list of Features:
 
-* [Sketch topology diagram and export as PDF](#usage-sketch)
-* [Generate and provision OSPF underlay configuration] 
+* Inspect network topology to automatically 
+* Generate and provision OSPF underlay configuration
 * Generate and provision EBGP underlay configuration 
 * Generate and provision multiple LAGs configuration 
 * Backup all active configurations
+* Push multiple configuration files 
 
 For further details, please check the usage section below
 
@@ -195,14 +196,15 @@ pip install -r requirements.txt
 Each individual operation is defined as an Ansible role. Roles represent the building blocks that can be easily reused 
 and combined across different playbooks. 
 
-You have to ways of:
+You can use this project in two ways:
 
-* Run one the playbooks 
-* Write your own playbook and import a role
+* Run the playbooks;
+* Write your own playbook and import one or more roles.
 
 
 ### Playbooks
 
+Below the complete list of Playbooks ready to be used. You can refer to the individual Playbook's documentation: 
 * [pb_backup_config.yml](/docs/playbook-docs/pb_backup_config_README.md)
 * [pb_sketch_topology.yml](docs/playbook-docs/pb_sketch_topology_README.md)
 * [pb_provision_ip_underlay.yml]()
@@ -214,6 +216,7 @@ You have to ways of:
 
 ### Roles
 
+Below the list of roles that are employed by the Playbooks and that you can import in your own:
 * [dana_junos_topology_inspector](roles/dana_junos_topology_inspector/README.md)
 * [dana_junos_push_config](roles/dana_junos_push_config/README.md)
 * [dana_junos_backup_config](roles/dana_junos_backup_config/README.md)

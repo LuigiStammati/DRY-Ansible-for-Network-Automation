@@ -2,14 +2,40 @@
 
 Playbook name: pb_backup_config.yml
 
-This playbook backups all the active configurations of the target devices and collect them in a folder.
-Configuration files are named with the corresponding device hostname, a timestamp and an optional label.
+This playbook retrieves all the active configurations of target devices and collects them in a local backup folder.
+Configuration files are named with the corresponding device hostname, along with an optional timestamp and label.
 
+## Roles Dependencies 
+
+This Playbook relies on the following roles
+
+* [dana_junos_backup_config](roles/dana_junos_backup_config/README.md)
 
 ## Example 1 - Basic
 
-Run the playbook (By default, all the inventory hosts are targeted. You can be more selective by providing the variable
- `targets`):
+We assume you have an inventory folder structured as following:
+
+```
+inventory
+├── group_vars
+├── host_vars
+└── hosts.ini
+```
+
+Your `hosts.ini` looks like this
+
+```
+# invenotry/hosts.ini
+
+router-1
+router-2
+router-3
+router-4
+router-5
+router-6
+```
+
+Run the playbook with no input variables:
  
 ```
 ansible-playbook pb_backup_config.yml -i invenotry/hosts.ini
@@ -27,6 +53,10 @@ inventory
 │   ├── 2020-01-01_1200.router-5.conf
 │   └── 2020-01-01_1200.router-6.conf
 ```
+
+By default, all the inventory hosts are targeted. You can be more selective 
+by populating the variable`targets` with a particular device or group name.
+
 
 ## Example 2 - No Timestamps
 

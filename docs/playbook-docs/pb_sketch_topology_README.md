@@ -14,7 +14,7 @@ The playbook relies on the following roles:
 
 You can check the requirements on roles' documentation.
 
-## Example 1
+## Example 1 - Basic
 
 We assume you have an inventory folder structured as following:
 
