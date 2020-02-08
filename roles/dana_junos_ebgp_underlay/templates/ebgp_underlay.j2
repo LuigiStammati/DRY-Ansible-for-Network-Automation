@@ -1,15 +1,16 @@
 
-
 protocols {
 bgp {
-group ebgp-underlay {
+group {{ ebgp_config_group_name }} {
     type external;
     family inet {
         unicast;
     }
+    {% if enable_load_balancing|bool %}
     multipath {
     multiple-as;
     }
+    {% endif %}
     export pl-local_loopback;
     local-as {{ local_asn }};
 
@@ -36,17 +37,19 @@ policy-options {
             then accept;
         }
     }
-
+{% if enable_load_balancing|bool %}
     policy-statement ECMP {
         then {
             load-balance per-packet;
         }
     }
+{% endif %}
 }
 
-
+{% if enable_load_balancing|bool %}
 routing-options {
     forwarding-table {
         export ECMP;
     }
 }
+{% endif %}

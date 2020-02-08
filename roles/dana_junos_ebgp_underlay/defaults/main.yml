@@ -7,4 +7,10 @@ underlay_group: "ip_underlay"
 # The first Autonomous System number to be assigned. The other ASNs will be assigned incrementally
 asn_start: "4200000100"
 
+# yes to configure load balancing policy for the PFE and enable EBGP multipath multiple AS
+enable_load_balancing: yes
+
+# The group name used in the ebgp configuration
+ebgp_config_group_name: "ebgp-underlay"
+
 
