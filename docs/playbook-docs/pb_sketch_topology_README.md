@@ -5,7 +5,7 @@ Playbook: pb_sketch_topology.yml
 This playbook discovers the network topology (or a subset of it) and sketches nodes, links and interfaces which are 
 drawn in a topology diagram exported as PDF.
  
-## Requirements 
+## Requirements and Role Dependencies
 
 The playbook relies on the following roles:
 
@@ -13,6 +13,12 @@ The playbook relies on the following roles:
 * [dana_topology_diagram](/roles/dana_topology_diagram/README.md)
 
 You can check the requirements on roles' documentation.
+
+## Playbook Variables
+
+* `targets` (default value = `all`): it is the _hosts_ parameter of the playbook, used to set the target hosts. 
+It can be a group name or a device name
+
 
 ## Example 1 - Basic
 
@@ -90,17 +96,3 @@ This will make sure that only links connecting the members of the group will be 
 The topology_diagram.pdf will display a sketch of the selected subset of the topology like this:
 
 ![topo_diagram_sub](/docs/images/dana_topology_diagram_pdf_output_subset.png)
-
-
-## Complete List of Variables
-
-Playbook variables:
-
-* _targets_ (default value = `all`): it is the _hosts_ parameter of the playbook, used to set the target hosts. 
-It can be a group name or a device name
-
-For role variables, refer to
-
-* [dana_junos_topology_inspector](/roles/dana_junos_topology_inspector/README.md)
-* [dana_topology_diagram](/roles/dana_topology_diagram/README.md)
-

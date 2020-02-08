@@ -6,18 +6,32 @@ Playbook: _pb_provision_ospf_underlay.yml_
 This playbook first discovers the network topology, then generates the Junos configuration for underlay IP connectivity 
 and OSPF over the physical interfaces to redistribute the loopback addresses.
 
-## Requirements
+## Requirements and Role Dependencies 
 
 The playbook relies on the following roles:
 
-* [dana_junos_topology_inspector](/roles/dana_junos_topology_inspector/README.md)
-* [dana_junos_ip_underlay](/roles/dana_junos_ip_underlay/README.md)
 * [dana_junos_ospf_underlay](/roles/dana_junos_ospf_underlay/README.md)
 * [dana_junos_push_config](/roles/dana_junos_push_config/README.md)
 
-Please check the requirements on roles' documentation.
 
-## Example 1
+## Playbook Variables
+
+* `targets` (default value = `ip_underlay`): it is the _hosts_ parameter of the playbook, used to set the target hosts. 
+It can be a group name or a device name
+
+## Playbook Tags
+
+* `push_config`: with this tag, upon generating the configurations, the playbook also loads and commits them to the 
+corresponding remote devices. 
+
+Example:
+
+```
+ansible-playbook pb_provision_ebgp_underlay.yml -i invenotry/hosts.ini -t push_config
+
+```
+
+## Example 1 - Basic
 
 1. Create a group called `ip_underlay` in your inventory file whose members are the devices you want to be part of 
 the OSPF underaly:
@@ -103,7 +117,7 @@ ansible-playbook pb_provision_ospf_underlay.yml -i invenotry/hosts.ini -t push_c
 
 This will load (with _replace_ mode) and commit the configurations on the respective devices.
 
-## Example 2
+## Example 2 - Target Group
 
 Suppose you already have a group called `net_core` that you wish to provision:
 
@@ -133,18 +147,3 @@ You can modify the variable `underlay_group` to be the desired target group:
     ```
 
 The output is analogous to the previous example.
-
-
-## Complete List of Variables
-
-Playbook variables:
-
-* _targets_ (default value = `ip_underlay`): it is the _hosts_ parameter of the playbook, used to set the target hosts. 
-It can be a group name or a device name
-
-Role Variables:
-
-* [dana_junos_topology_inspector](/roles/dana_junos_topology_inspector/README.md)
-* [dana_junos_ip_underlay](/roles/dana_junos_ip_underlay/README.md)
-* [dana_junos_ospf_underlay](/roles/dana_junos_ospf_underlay/README.md)
-* [dana_junos_push_config](/roles/dana_junos_push_config/README.md)

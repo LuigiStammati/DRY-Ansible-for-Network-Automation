@@ -11,16 +11,14 @@ Moreover, if pushing the configuration via SSH fails, the role automatically att
 using different credentials that can be customized. 
 
 
-Requirements
+Requirements and Role Dependencies
 ------------
 
-None
+* __Juniper.junos__ role. Already included in the meta, no need to import this role at the playbook level.
+
 
 Role Variables
 --------------
-
-Variable in default/main.yml:
-
 
 * `built_configs_dir` (default `{{ inventory_dir }}/_built_configs`): Path to the directory where the configuration 
 files you wish to load and commit are located;
@@ -34,15 +32,33 @@ not configured with SSH yet (for example _zeroized_ devices)
 this prefix will be looked up in the folder;
 
 
-Dependencies
-------------
+Example Playbook
+----------------
 
-* __Juniper.junos__ role. Already included in the meta, no need to import this role at the playbook level.
+```
+# my_playbook.yml
 
+- name: Push device configurations
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Push device configurations
+      include_role:
+        name: dana_junos_push_config
+        public: yes
+        # Apply tags required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+```
 
 License
 -------
 
+BSD
 
 Author Information
 ------------------

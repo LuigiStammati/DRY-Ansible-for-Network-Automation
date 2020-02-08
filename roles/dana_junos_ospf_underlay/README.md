@@ -1,4 +1,4 @@
-Role Name
+DANA - Junos OSPF Underlay
 =========
 
 This role generates Junos configurations for OSPF underlay connectivity.
@@ -10,10 +10,13 @@ The role will automatically:
 3. Generate the OSPF configurations to enable OSPF over the underlay interfaces and redistribute the loopback interface
  addresses.
 
-Requirements
+Requirements and Role Dependencies
 ------------
 
-None
+This role relies on the following roles:
+
+* [dana_junos_ip_underlay](../dana_junos_ip_underlay/README.md)
+
 
 Role Variables
 --------------
@@ -25,12 +28,29 @@ not exist, it will be automatically created.
 Only devices that are members of this group will be discovered and configured.
 * `ospf_area` (default `"0.0.0.0"`): The OSPF area that will be configured.
 
-Dependencies
-------------
 
-roles:
+Example Playbook
+----------------
 
-* [dana_junos_ip_underlay](../dana_junos_ip_underlay/README.md)
+```
+# my_playbook.yml
+
+- name: Generate and provision OSPF underlay configurations
+  hosts: ip_underlay
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Generate IP and OSPF underlay configurations
+      include_role:
+        name: dana_junos_ospf_underlay
+        public: yes
+        # Apply tags required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+```
 
 License
 -------

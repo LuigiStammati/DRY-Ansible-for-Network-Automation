@@ -20,8 +20,14 @@ but you don't really need to care about it: it always cleans up any configuratio
 it might have added, rolling back all devices' configurations to their initial status.
 
 
-Requirements
+Requirements and Role Dependencies
 ------------
+
+Roles:
+
+* __Juniper.junos__ role. Already included in the _meta_, 
+no need to import this role at the playbook level.
+
 
 Target devices must run a Junos version that supports the LLDP option 
 `neighbour-port-info-display port-description`. Please check the 
@@ -51,13 +57,28 @@ will be included in the result, ignoring any possible aggregate bundle configure
 
 * `lldp_convergence_time` (default `5`) Seconds to wait after enabling LLDP before retrieving neighbours info.
 
+Example Playbook
+----------------
 
-Dependencies
-------------
+```
+# my_playbook.yml
 
-* __Juniper.junos__ role. Already included in the _meta_, 
-no need to import this role at the playbook level.
-
+- name: Inspect topology
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Inspect topology
+      include_role:
+        name: dana_junos_topology_inspector
+        public: yes
+        # Apply tags required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+```
 
 License
 -------

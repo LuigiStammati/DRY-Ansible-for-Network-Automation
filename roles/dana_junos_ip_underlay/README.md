@@ -13,6 +13,14 @@ list of devices you want to be part of it. That's all. The role will automatical
 ip addresses from the selected subnet
 
 
+Requirements and Role Dependencies 
+----------------------------------
+
+roles:
+
+* [dana_junos_topology_inspector](../dana_junos_topology_inspector/README.md)
+
+
 Role Variables
 --------------
 
@@ -30,13 +38,28 @@ not exist, the role will create it automatically.
 for each underlay interface
 
 
-Dependencies
-------------
+Example Playbook
+----------------
 
-roles:
+```
+# my_playbook.yml
 
-* [dana_junos_topology_inspector](../dana_junos_topology_inspector/README.md)
-
+- name: Generate IP underlay configuration
+  hosts: ip_underlay
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Generate IP underlay configuration
+      include_role:
+        name: dana_junos_ip_underlay
+        public: yes
+        # Apply tags required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+```
 
 License
 -------

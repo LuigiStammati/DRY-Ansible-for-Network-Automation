@@ -10,10 +10,14 @@ The role will automatically:
 3. Assign a unique ASN to each device and generate the EBGP configurations to establish BGP peering over the physical 
 interfaces and redistribute the loopback interface addresses.
 
-Requirements
-------------
+Requirements and Role Dependencies
+----------------------------------
 
-None
+roles:
+
+* [dana_junos_ip_underlay](../dana_junos_ip_underlay/README.md)
+
+
 
 Role Variables
 --------------
@@ -27,12 +31,30 @@ Only devices that are members of this group will be discovered and configured.
 device. Further ASNs will be picked incrementally from this value. The default value represents a 32-bits ASN. However,
  the variable is just a string, therefore it can be also used to represent a 16-bit ASN e.g.`"65000"`
 
-Dependencies
-------------
 
-roles:
+Example Playbook
+----------------
 
-* [dana_junos_ip_underlay](../dana_junos_ip_underlay/README.md)
+```
+# my_playbook.yml
+
+- name: Generate IP and EBGP underlay configuration
+  hosts: ip_underlay
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Generate IP and EBGP underlay configuration
+      include_role:
+        name: dana_junos_ebgp_underlay
+        public: yes
+        # Apply tags required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+```
+
 
 License
 -------

@@ -6,7 +6,7 @@ Playbook name: _pb_provision_ebgp_underlay.yml_
 This playbook first discovers the network topology, then generates the Junos configuration for underlay IP connectivity 
 and EBGP peering over the physical interfaces to redistribute the loopback addresses.
 
-## Roles Dependencies 
+## Requirements and Role Dependencies 
 
 This Playbook relies on the following roles
 
@@ -17,9 +17,20 @@ This Playbook relies on the following roles
 
 ## Playbook Variables
 
-* `targets` (default value = `all`): it is the _hosts_ parameter of the playbook, used to set the target hosts. 
+* `targets` (default value = `ip_underlay`): it is the _hosts_ parameter of the playbook, used to set the target hosts. 
 It can be a group name or a device name
 
+## Playbook Tags
+
+* `push_config`: with this tag, upon generating the configurations, the playbook also loads and commits them to the 
+corresponding remote devices. 
+
+Example:
+
+```
+ansible-playbook pb_provision_ebgp_underlay.yml -i invenotry/hosts.ini -t push_config
+
+```
 
 ## Example 1 - Basic
 

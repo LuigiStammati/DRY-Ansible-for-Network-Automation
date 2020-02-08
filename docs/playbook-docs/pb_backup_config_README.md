@@ -5,11 +5,18 @@ Playbook name: pb_backup_config.yml
 This playbook retrieves all the active configurations of target devices and collects them in a local backup folder.
 Configuration files are named with the corresponding device hostname, along with an optional timestamp and label.
 
-## Roles Dependencies 
+## Requirements and Role Dependencies 
 
 This Playbook relies on the following roles
 
 * [dana_junos_backup_config](roles/dana_junos_backup_config/README.md)
+
+
+## Playbook Variables
+
+* `targets` (default value = `all`): it is the _hosts_ parameter of the playbook, used to set the target hosts. 
+It can be a group name or a device name
+
 
 ## Example 1 - Basic
 
@@ -166,13 +173,3 @@ inventory
 │   └── MY-ACCESS.2020-01-01_1200.router-6.conf
 ```
 
-## Complete List of Variables
-
-Playbook variables:
-
-* `targets` (default value = `all`): it is the _hosts_ parameter of the playbook, used to set the target hosts. 
-It can be a group name or a device name
-
-Role Variables:
-
-* [dana_junos_backup_config](/roles/dana_junos_topology_inspector/README.md)

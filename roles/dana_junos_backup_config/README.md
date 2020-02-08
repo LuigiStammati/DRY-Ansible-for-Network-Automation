@@ -12,10 +12,12 @@ You can specify the label by overriding the variable `config_label`, either
 in the inventory (group_vars or host_vars) or via cli as extra var. 
 
 
-Requirements
-------------
+Requirements and Role Dependencies
+----------------------------------
 
-None
+* __Juniper.junos__ role. Already included in the _meta_, 
+no need to import this role at the playbook level.
+
 
 Role Variables
 --------------
@@ -26,12 +28,28 @@ Role Variables
 * __include_timestamp__ (default `yes`): by default, the current timestamp is included in the file name. You can 
 exclude it by setting this variable to `no`.
 
+Example Playbook
+----------------
 
-Dependencies
-------------
+```
+# my_playbook.yml
 
-* __Juniper.junos__ role. Already included in the _meta_, 
-no need to import this role at the playbook level.
+- name: Backup active configurations
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Backup active configurations
+      include_role:
+        name: dana_junos_backup_config
+        public: yes
+        # Apply tags required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+```
 
 
 License
