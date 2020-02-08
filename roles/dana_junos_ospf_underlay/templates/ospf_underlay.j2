@@ -12,3 +12,21 @@ protocols {
         }
     }
 }
+
+{% if enable_load_balancing|bool %}
+policy-options {
+
+    policy-statement ECMP {
+        then {
+            load-balance per-packet;
+        }
+    }
+}
+
+
+routing-options {
+    forwarding-table {
+        export ECMP;
+    }
+}
+{% endif %}
