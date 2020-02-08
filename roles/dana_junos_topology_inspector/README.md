@@ -15,9 +15,11 @@ The results of this inspection are exposed in three variables that become availa
 
 You can find out more details about the above output variables in the _Role Variable_ section.
 
-To carry out the inspection, this role automatically configures the relevant interfaces and enables LLDP, 
-but you don't really need to care about it: it always cleans up any configuration snippet 
-it might have added, rolling back all devices' configurations to their initial status.
+How does it work:
+
+To carry out the inspection, this role automatically configures the interfaces connecting the devices involved 
+and enables LLDP on all of them. However, you don't really need to worry about it: upon retrieving the relevant 
+information and storing it in the output variables, this pre-configuration is cleaned up by a rollback operation.  
 
 
 Requirements and Role Dependencies

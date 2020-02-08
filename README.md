@@ -1,7 +1,7 @@
 # DRY Ansible for Network Automation
 
 __DRY Ansible for Network Automation (DANA)__ is a collection of Ansible roles and playbooks that allow you to provision,
- sketch and backup your Junos OS network without the need of manually describing the details of your topology.
+ sketch and backup your Junos OS network without the need of manually feeding topology links and interfaces.
  
 This is achieved by leveraging a topology inspection role that automatically discovers and represents every links, 
 nodes and interfaces of a particular group in the inventory file. 
@@ -23,7 +23,7 @@ Complete list of Features:
 * Backup all active configurations
 * Push multiple configuration files 
 
-For further details, please check the usage section below
+For further details, please check the [usage](#sec-usage) section below
 
 
 ## Quick Start Example - EBGP Underlay Provisioning
@@ -189,14 +189,15 @@ conda activate dry_ansible_venv
 pip install -r requirements.txt
 ```
 
-## Usage
+## <a name="sec-usage"></a>Usage
 
-Each individual operation is defined as a custom Ansible role. Roles are reused across different ready-to-use playbooks.
+Each individual operation is defined as a custom Ansible role. 
+Roles are then imported across different ready-to-use playbooks.
 
 You can use this project in two ways:
 
 * Run one of the playbooks;
-* Write your own playbook and import one or more roles.
+* Write your own playbook and import one or more custom roles.
 
 
 ### Playbooks

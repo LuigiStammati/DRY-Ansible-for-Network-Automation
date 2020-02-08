@@ -19,47 +19,47 @@ not exist, it will be automatically created.
 * __topology_links__: a data structure representing the links of the topology to be drawn. 
 An example in JSON format of the expected structure:
 
-    ```
-    [
-        {
-            source: {
-                node: {
-                    name: str
-                }
-                interface: {
-                    name: str,
-                }
-            },
-            target: {
-                node: {
-                    name: str
-                }
-                interface: {
-                    name: str
-                }
+```
+[
+    {
+        source: {
+            node: {
+                name: str
+            }
+            interface: {
+                name: str,
             }
         },
-        {
-            source: {
-                node: {
-                    name: str
-                }
-                interface: {
-                    name: str,
-                }
-            },
-            target: {
-                node: {
-                    name: str
-                }
-                interface: {
-                    name: str
-                }
+        target: {
+            node: {
+                name: str
             }
-        } 
-            
-    ]
-    ```
+            interface: {
+                name: str
+            }
+        }
+    },
+    {
+        source: {
+            node: {
+                name: str
+            }
+            interface: {
+                name: str,
+            }
+        },
+        target: {
+            node: {
+                name: str
+            }
+            interface: {
+                name: str
+            }
+        }
+    } 
+        
+]
+```
 
 
 Example Playbook
