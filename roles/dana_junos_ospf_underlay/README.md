@@ -1,4 +1,4 @@
-DANA - Junos OSPF Underlay
+DANA Junos OSPF Underlay
 =========
 
 This role generates Junos configurations for OSPF underlay connectivity.
@@ -27,6 +27,8 @@ not exist, it will be automatically created.
 * `underlay_group` (default `"ip_underlay"`): A group name that should also be defined in the inventory file. 
 Only devices that are members of this group will be discovered and configured.
 * `ospf_area` (default `"0.0.0.0"`): The OSPF area that will be configured.
+* `enable_load_balancing` (default yes): If yes, it will generate the configuration to enable load balancing on
+ control and forwarding plane. This includes a load balancing policy applied to the PFE.
 
 
 Example Playbook

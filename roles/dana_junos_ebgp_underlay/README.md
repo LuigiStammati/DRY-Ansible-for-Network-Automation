@@ -18,7 +18,6 @@ roles:
 * [dana_junos_ip_underlay](../dana_junos_ip_underlay/README.md)
 
 
-
 Role Variables
 --------------
 
@@ -30,7 +29,11 @@ Only devices that are members of this group will be discovered and configured.
 * `asn_start` (default `"4200000100"`): the first Autonomous System Number (ASN) that will be assigned to the first 
 device. Further ASNs will be picked incrementally from this value. The default value represents a 32-bits ASN. However,
  the variable is just a string, therefore it can be also used to represent a 16-bit ASN e.g.`"65000"`
-
+* `enable_load_balancing` (default yes): If yes, it will generate the configuration to enable load balancing on
+ control and forwarding plane. This includes a load balancing policy applied to the PFE along with multi-path multiple 
+ AS option in the BGP configuration.
+* `ebgp_config_group_name` (default `"ebgp-underlay"`): the name that will be given to the BGP group in the
+ configuration;
 
 Example Playbook
 ----------------
