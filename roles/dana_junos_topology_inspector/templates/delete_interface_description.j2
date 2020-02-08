@@ -1,0 +1,3 @@
+{% for interface in active_interfaces %}
+delete interfaces {{ interface['name'][0]['data'] }} description
+{% endfor %}

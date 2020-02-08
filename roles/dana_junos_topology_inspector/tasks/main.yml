@@ -1,5 +1,5 @@
 ---
-# tasks file for roles/dana_junos_topology_inspector
+# tasks file for roles/junos_topology_inspector
 
 - name: Retrieve interfaces
   junos_command:
@@ -20,11 +20,29 @@
 
 - name: Enable LLDP, discover neighbors and retrieve links
   block:
+    - name: Remove the description from the interface if configured
+      juniper_junos_config:
+        template: "{{ role_path }}/templates/delete_interface_description.j2"
+        load: "set"
+        # The description is removed if present, otherwise it overlaps the LLDP remote interface name
+        ignore_warning: yes
+        vars:
+          active_interfaces: "{{ active_interfaces }}"
+      register: interface_description_response
+
+    - name: Update rollback counter if interface description has been removed
+      set_fact:
+        rollback_counter: "{{ rollback_counter | int + 1 }}"
+      when: interface_description_response is changed
+
+
     - name: Create a dummy unit 0 on each active interface
+      # If the unit cannot be created, likely the interface is already configured and would be ready for LLDP,
+      # so just continue if the task fails
+      ignore_errors: yes
       juniper_junos_config:
         template: "{{ role_path }}/templates/dummy_unit_0.j2"
         load: "set"
-        # The description is removed if present, otherwise it overlaps the remove interface name
         ignore_warning: yes
         vars:
           active_interfaces: "{{ active_interfaces }}"
