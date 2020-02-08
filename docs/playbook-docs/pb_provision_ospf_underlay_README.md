@@ -1,5 +1,5 @@
 
-# Provision OSPF Underlay 
+# Playbook - Provision OSPF Underlay 
 
 Playbook: _pb_provision_ospf_underlay.yml_
 
@@ -27,7 +27,7 @@ corresponding remote devices.
 Example:
 
 ```
-ansible-playbook pb_provision_ebgp_underlay.yml -i invenotry/hosts.ini -t push_config
+ansible-playbook pb_provision_ospf_underlay.yml -i invenotry/hosts.ini -t push_config
 
 ```
 

@@ -1,9 +1,9 @@
 
-# Provision EBGP Underlay 
+# Playbook - Provision EBGP Underlay 
 
 Playbook name: _pb_provision_ebgp_underlay.yml_
 
-This playbook first discovers the network topology, then generates the Junos configuration for underlay IP connectivity 
+This playbook first discovers the network topology, then it generates the Junos configuration for underlay IP connectivity 
 and EBGP peering over the physical interfaces to redistribute the loopback addresses.
 
 ## Requirements and Role Dependencies 
@@ -71,6 +71,7 @@ the EBGP underaly:
     router-2
     router-3
     ```
+    
 2. Run the playbook with no further inputs:
 
     ```

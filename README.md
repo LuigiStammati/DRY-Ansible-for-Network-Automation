@@ -7,8 +7,6 @@ This is achieved by leveraging a topology inspection role that automatically dis
 nodes and interfaces of a particular group in the inventory file. 
 In this way, you don't have to write down a separate YAML file to represent the target topology.
 
-
-
 Don't Repeat Yourself (DRY) is the core paradigm driving this project:
 
 * __it is DRY__ : by breaking down atomic operations into Ansible roles that are then conveniently combined and reused 
@@ -18,7 +16,7 @@ your network topology.
 
 Complete list of Features:
 
-* Inspect network topology to automatically 
+* Inspect the network topology and automatically represent links and interfaces
 * Generate and provision OSPF underlay configuration
 * Generate and provision EBGP underlay configuration 
 * Generate and provision multiple LAGs configuration 
@@ -193,21 +191,19 @@ pip install -r requirements.txt
 
 ## Usage
 
-Each individual operation is defined as an Ansible role. Roles represent the building blocks that can be easily reused 
-and combined across different playbooks. 
+Each individual operation is defined as a custom Ansible role. Roles are reused across different ready-to-use playbooks.
 
 You can use this project in two ways:
 
-* Run the playbooks;
+* Run one of the playbooks;
 * Write your own playbook and import one or more roles.
 
 
 ### Playbooks
 
-Below the complete list of Playbooks ready to be used. You can refer to the individual Playbook's documentation: 
 * [pb_backup_config.yml](/docs/playbook-docs/pb_backup_config_README.md)
 * [pb_sketch_topology.yml](docs/playbook-docs/pb_sketch_topology_README.md)
-* [pb_provision_ip_underlay.yml]()
+* [pb_provision_ip_underlay.yml](docs/playbook-docs/pb_provision_ip_underlay_README.md)
 * [pb_provision_ebgp_underlay.yml](/docs/playbook-docs/pb_provision_ebgp_underlay_README.md)
 * [pb_provision_ospf_underlay.yml](/docs/playbook-docs/pb_provision_ospf_underlay_README.md)
 * [pb_push_config.yml](/docs/playbook-docs/pb_push_config_README.md)
@@ -216,7 +212,6 @@ Below the complete list of Playbooks ready to be used. You can refer to the indi
 
 ### Roles
 
-Below the list of roles that are employed by the Playbooks and that you can import in your own:
 * [dana_junos_topology_inspector](roles/dana_junos_topology_inspector/README.md)
 * [dana_junos_push_config](roles/dana_junos_push_config/README.md)
 * [dana_junos_backup_config](roles/dana_junos_backup_config/README.md)
