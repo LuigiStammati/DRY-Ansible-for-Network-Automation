@@ -1,33 +1,55 @@
 Junos LAG
 =========
 
-This role automatically generates the Junos configuration for aggregated interfaces without requesting 
-any input data rather than the devices that participate on the LAG.
+This role automatically generates the Junos configuration for one or more aggregated interfaces (LAG) without 
+requiring any interface name to be fed as input. 
+
+You only create a group in the inventory file for each LAG interface you wish to configure that contains the devices for
+which you want to bundle the interfaces together. The name must be `lag_bundle_<INT-NUM>`, where `<INT-NUM>` is the 
+number you wish to use for that aggregate interface e.g. `lag_bundle_3>` would create the aggregate interface `ae3`.
+
+The role will automatically discover links and interfaces connecting the two devices belonging to the group and create 
+the corresponding configuration.
 
 
-Requirements
-------------
+Requirements and Role Dependencies 
+----------------------------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+roles:
+
+* [dana_junos_topology_inspector](../dana_junos_topology_inspector/README.md)
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* `lag_config_dir` (default `"{{ inventory_dir }}/_lag_configs"`): The path to
+the directory in which configuration files will be saved. By default, it's a folder
+called `_lag_configs` within the inventory file. If the folder specified does 
+not exist, the role will create it automatically.
 
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```
+# my_playbook.yml
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- name: Generate LAG configuration
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: Generate LAG configuration
+      include_role:
+        name: dana_junos_lag
+        public: yes
+        # Apply tags required to make role's tasks inherit the desired tags
+        apply:
+          tags:
+            - always
+      tags:
+        - always
+```
 
 License
 -------

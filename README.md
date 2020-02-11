@@ -1,27 +1,38 @@
 # DRY Ansible for Network Automation
 
 __DRY Ansible for Network Automation (DANA)__ is a collection of Ansible roles and playbooks that allow you to provision,
- sketch and backup your Junos OS network without the need of manually feeding topology links and interfaces.
+ sketch and backup a network running Junos OS, without the need of manually feeding extra data to represent topology 
+ links and interfaces.
  
-This is achieved by leveraging a topology inspection role that automatically discovers and represents every links, 
-nodes and interfaces of a particular group in the inventory file. 
-In this way, you don't have to write down a separate YAML file to represent the target topology.
+This is achieved by leveraging a topology inspection role that automatically discovers every link, 
+node and interface of a particular group in the inventory file. 
 
+
+The primary goal of this project is to assist network engineers who needs to deploy a testing environment 
+quickly, reliably and with as few manual inputs as possible.
+
+Another intent is to illustrate some example of how to combine open source building 
+blocks such as Ansible, Python, Jinja2 and Juniper APIs to facilitate the process of embracing a more 
+comprehensive DevNetOps culture.
+ 
+ 
 Don't Repeat Yourself (DRY) is the core paradigm driving this project:
 
-* __it is DRY__ : by breaking down atomic operations into Ansible roles that are then conveniently combined and reused 
+* __it is DRY__ : by breaking down atomic operations into Ansible roles that are then conveniently reused 
 across easily consumable playbooks;
 * __it keeps you DRY__: by freeing you from providing anything that can be automatically figured out about 
 your network topology.
 
-Complete list of Features:
 
-* Inspect the network topology and automatically represent links and interfaces
-* Generate and provision OSPF underlay configuration
-* Generate and provision EBGP underlay configuration 
-* Generate and provision multiple LAGs configuration 
-* Backup all active configurations
-* Push multiple configuration files 
+## Complete list of Features
+
+* Inspect a Junos OS network and automatically represent topology links and interfaces;
+* Draw a sketch of the network topology and export it in PDF;
+* Generate and provision OSPF underlay configuration;
+* Generate and provision EBGP underlay configuration;
+* Generate and provision multiple LAGs configuration;
+* Backup all active configurations;
+* Push multiple configuration files;
 
 For further details, please check the [usage](#sec-usage) section below
 
@@ -34,12 +45,12 @@ Suppose you spent few hours in the lab cabling up the following network topology
  
 The devices only got your Lab default configuration, which includes management and loopback interfaces.  
  
-Your ultimate goal is to configure an IP Fabric by provisioning:
+Your ultimate goal is to configure an IP Fabric that includes:
 
-* The underlay IP connectivity on all fabric links, 
-* EBGP as underlay routing protocol with one private ASN per device to redistribute the loopback addresses across 
-the fabric,
-* Load balancing 
+* The underlay IP connectivity on all fabric links, with a different IP subnet per link;
+* EBGP as underlay routing protocol, with one private ASN per device to redistribute the loopback addresses across 
+the fabric;
+* Load balancing enabled in the control and forwarding plane.
 
 The playbook _pb_provision_ebgp_underlay_ is what you need:
 
@@ -202,12 +213,19 @@ You can use this project in two ways:
 
 ### Playbooks
 
-* [pb_backup_config.yml](/docs/playbook-docs/pb_backup_config_README.md)
-* [pb_sketch_topology.yml](docs/playbook-docs/pb_sketch_topology_README.md)
-* [pb_provision_ip_underlay.yml](docs/playbook-docs/pb_provision_ip_underlay_README.md)
-* [pb_provision_ebgp_underlay.yml](/docs/playbook-docs/pb_provision_ebgp_underlay_README.md)
-* [pb_provision_ospf_underlay.yml](/docs/playbook-docs/pb_provision_ospf_underlay_README.md)
-* [pb_push_config.yml](/docs/playbook-docs/pb_push_config_README.md)
+* [pb_backup_config.yml](/docs/playbook-docs/pb_backup_config_README.md): Backup all active configurations in a single 
+folder;
+* [pb_sketch_topology.yml](docs/playbook-docs/pb_sketch_topology_README.md): Discover the network topology 
+(or a subset of it) and generate a PDF diagram with a sketch of nodes, links and interfaces; 
+* [pb_provision_ip_underlay.yml](docs/playbook-docs/pb_provision_ip_underlay_README.md): Discover the network topology 
+and then generate the Junos configuration for underlay IP connectivity.
+* [pb_provision_ebgp_underlay.yml](/docs/playbook-docs/pb_provision_ebgp_underlay_README.md): Discover the network 
+topology and then generate the Junos configuration for underlay IP connectivity and EBGP peering over the physical 
+interfaces;
+* [pb_provision_ospf_underlay.yml](/docs/playbook-docs/pb_provision_ospf_underlay_README.md): Discover the network 
+topology and then generate the Junos configuration for underlay IP connectivity and OSPF over the physical interfaces;
+* [pb_push_config.yml](/docs/playbook-docs/pb_push_config_README.md): Load and commit one or more configuration files 
+from a local folder to the corresponding remote devices, identified by the config file name.
 * [pb_provision_lag.yml](/docs/playbook-docs/pb_provision_lag_README.md)
 
 

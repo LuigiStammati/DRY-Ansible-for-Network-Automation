@@ -31,7 +31,7 @@ For each further link the next subnet will be incrementally picked
 Only devices that are members of this group will be discovered and configured.
 * `ip_underlay_config_dir` (default `"{{ inventory_dir }}/_ip_underlay_configs"`): The path to
 the directory in which configuration files will be saved. By default, it's a folder
-called `ip_underlay_configs` within the inventory file. If the folder specified does 
+called `_ip_underlay_configs` within the inventory file. If the folder specified does 
 not exist, the role will create it automatically.
 
 * `include_interface_description`: (default `yes`): If yes, it will configure neighbor's name as the description 
