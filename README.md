@@ -8,12 +8,11 @@ This is achieved by leveraging a topology inspection role that automatically dis
 node and interface of a particular group in the inventory file. 
 
 
-The primary goal of this project is to assist network engineers who needs to deploy a testing environment 
+The primary goal of this project is to assist network engineers who need to deploy a testing environment 
 quickly, reliably and with as few manual inputs as possible.
 
-Another intent is to illustrate some example of how to combine open source building 
-blocks such as Ansible, Python, Jinja2 and Juniper APIs to facilitate the process of embracing a more 
-comprehensive DevNetOps culture.
+Another intent is to illustrate some examples of how open source building blocks such as Ansible, Python and Jinja2 
+can be used in combination with Junos OS APIs.
  
  
 Don't Repeat Yourself (DRY) is the core paradigm driving this project:
@@ -24,7 +23,14 @@ across easily consumable playbooks;
 your network topology.
 
 
-## Complete list of Features
+## Table of contents
+* [Complete list of Features](#complete-list-of-features)
+* [Quick Start Example](#quick-start-example---ebgp-underlay-provisioning)
+* [Installation](#installation)
+* [Usage](#usage)
+
+
+## Complete List of Features
 
 * Inspect a Junos OS network and automatically represent topology links and interfaces;
 * Draw a sketch of the network topology and export it in PDF;
@@ -34,8 +40,6 @@ your network topology.
 * Backup all active configurations;
 * Push multiple configuration files;
 
-For further details, please check the [usage](#sec-usage) section below
-
 
 ## Quick Start Example - EBGP Underlay Provisioning
 
@@ -43,41 +47,42 @@ Suppose you spent few hours in the lab cabling up the following network topology
 
  ![test](docs/images/dana_quick_example_init_topology.png)
  
-The devices only got your Lab default configuration, which includes management and loopback interfaces.  
+The switches only got your Lab default configuration, which includes management and loopback interfaces.  
  
-Your ultimate goal is to configure an IP Fabric that includes:
+Your ultimate goal is to configure an IP Fabric:
 
-* The underlay IP connectivity on all fabric links, with a different IP subnet per link;
-* EBGP as underlay routing protocol, with one private ASN per device to redistribute the loopback addresses across 
-the fabric;
+* Underlay IP connectivity on all fabric links, with a different IP subnet per link;
+* EBGP as underlay routing protocol, with one private Autonomous System Number (ASN) per device to redistribute the 
+loopback addresses across the fabric;
 * Load balancing enabled in the control and forwarding plane.
 
 The playbook _pb_provision_ebgp_underlay_ is what you need:
 
 1. Create a group called `ip_underlay` in your inventory file (_hosts.ini_) in which you include the devices that must be 
-part of the fabric (this will be the only input from your side)
+part of the fabric (this will be the only input from your side):
 
-    ```
-    # hosts.ini
-    
-    [ip_underlay]
-    qfx5120-1
-    qfx5120-2 
-    qfx5120-3
-    qfx5120-4
-    qfx5200-1
-    qfx5200-2
-    ```
+
+```
+# hosts.ini
+
+[ip_underlay]
+qfx5120-1
+qfx5120-2 
+qfx5120-3
+qfx5120-4
+qfx5200-1
+qfx5200-2
+```
 
 2. Run the playbook:
 
-    ```
-    ansible-playbook pb_provision_ebgp_underlay.yml -i hosts.ini -t push_config
-    ```
+```
+ansible-playbook pb_provision_ebgp_underlay.yml -i hosts.ini -t push_config
+```
 
-    The tag `push_config` just tells the playbook to both generate and commit the configuration to the remote devices. 
-    You can omit this tag if you only want to generate the files locally. They will be stored in a folder 
-    _\_ebgp_underlay_config_ in your inventory directory.
+The tag `push_config` tells the playbook to both generate and commit the configuration to the remote devices. 
+You can omit this tag if you only want to generate the files locally. They will be stored in a folder 
+_\_ebgp_underlay_config_ in your inventory directory.
 
 3. Enjoy the final result!
 
@@ -86,13 +91,13 @@ part of the fabric (this will be the only input from your side)
 A quick summary of what just happened:
 
 1. Links and neighbours connecting the members of the ip_underlay group have been automatically discovered, while Links 
-to devices outside the group have been safely ignored;
-2. IP addresses, interfaces, ASN have been automatically generated from default seed values (that can be customised);
+to devices outside the group (the EX switches in this example) have been safely ignored;
+2. IP addresses, interfaces and ASNs have been automatically generated from default seed values (that can be customised);
 3. A configuration file for each device involved has been generated accordingly, stored in a local folder and finally 
 pushed to the remote devices.
 
 You can find out more about how the discovery is carried out and how you can tune the default variables to suite your 
-needs in the Usage section of the documentation below.
+needs in the [Usage](#usage) section of the documentation below.
 
 The leaf device qfx5120-1 in this example will be provisioned with the following configuration:
 
@@ -176,31 +181,22 @@ routing-options {
 
 ## Installation 
 
-### Virtualenv
-To execute the playbooks locally it is recommended to run the project in a virtual environment. The following steps
-describe the installation using Anaconda: 
+On the machine that you want to use as Ansible controller 
+(can be your laptop or a dedicated server/VM):
 
-1. Clone the repository 
-2. Install Python 3.7
-3. Install [Anaconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) 
-4. Create a virtual environment with the requested Python version
+1. Clone or download this repository;
+2. Make sure Python 3.7 (or above) is installed, or create and activate a Python 3
+ [virtual environment](https://docs.python.org/3/tutorial/venv.html) (recommended);
+3. Install the requirements 
 
-```
-conda create --name dry_ansible_venv python=3.7
-```
-5. Activate the virtual environment 
+    ```
+    pip install -r requirements.txt
+    ```
     
-```
-conda activate dry_ansible_venv
-```
+At this point you are ready to execute the playbooks. 
 
-6. Install the requirements 
-    
-```
-pip install -r requirements.txt
-```
 
-## <a name="sec-usage"></a>Usage
+## Usage
 
 Each individual operation is defined as a custom Ansible role. 
 Roles are then imported across different ready-to-use playbooks.
@@ -212,6 +208,8 @@ You can use this project in two ways:
 
 
 ### Playbooks
+
+You can check each individual playbook documentation for more details and examples:
 
 * [pb_backup_config.yml](/docs/playbook-docs/pb_backup_config_README.md): Backup all active configurations in a single 
 folder;
@@ -226,7 +224,8 @@ interfaces;
 topology and then generate the Junos configuration for underlay IP connectivity and OSPF over the physical interfaces;
 * [pb_push_config.yml](/docs/playbook-docs/pb_push_config_README.md): Load and commit one or more configuration files 
 from a local folder to the corresponding remote devices, identified by the config file name.
-* [pb_provision_lag.yml](/docs/playbook-docs/pb_provision_lag_README.md)
+* [pb_provision_lag.yml](/docs/playbook-docs/pb_provision_lag_README.md): Automatically generates the Junos 
+configuration for one or more aggregated interfaces without requiring any interface name to be fed as input.
 
 
 ### Roles
