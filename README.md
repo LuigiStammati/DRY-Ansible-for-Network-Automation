@@ -1,25 +1,28 @@
 # DRY Ansible for Network Automation
 
 __DRY Ansible for Network Automation (DANA)__ is a collection of Ansible roles and playbooks that allow you to provision,
- sketch and backup a network running Junos OS, without the need of manually feeding extra data to represent topology 
- links and interfaces.
+ sketch and backup a network running Junos OS, without the need of manually feeding extra data to represent the 
+ physical topology.
  
-This is achieved by leveraging a topology inspection role that automatically discovers every link, 
-node and interface of a particular group in the inventory file. 
+This is achieved by leveraging a __topology inspection role__ that automatically discovers every link and interface 
+that connect all the devices of particular Ansible group. 
 
 
-The primary goal of this project is to assist network engineers who need to deploy a testing environment 
-quickly, reliably and with as few manual inputs as possible.
+The primary goal of this project is to assist network (and DevOps) engineers who need to deploy a testing network
+ quickly, reliably and with as few manual inputs as possible.
 
-Another intent is to illustrate some examples of how open source building blocks such as Ansible, Python and Jinja2 
-can be used in combination with Junos OS APIs.
- 
- 
+
+Another intent is to illustrate some practical examples of how the [Junos OS Automation stack](https://www.juniper.net/documentation/en_US/junos-ansible/topics/concept/junos-ansible-overview.html) 
+can be integrated with open source building 
+blocks such as [Ansible](https://www.ansible.com/), [Python](https://www.python.org/) and 
+[Jinja2](https://jinja.palletsprojects.com/);
+
+
 Don't Repeat Yourself (DRY) is the core paradigm driving this project:
 
-* __it is DRY__ : by breaking down atomic operations into Ansible roles that are then conveniently reused 
+* __It is DRY__ : by breaking down atomic operations into Ansible roles that are then conveniently reused 
 across easily consumable playbooks;
-* __it keeps you DRY__: by freeing you from providing anything that can be automatically figured out about 
+* __It keeps you DRY__: by freeing you from providing anything that can be automatically figured out about 
 your network topology.
 
 
@@ -186,14 +189,14 @@ On the machine that you want to use as Ansible controller
 
 1. Clone or download this repository;
 2. Make sure Python 3.7 (or above) is installed, or create and activate a Python 3
- [virtual environment](https://docs.python.org/3/tutorial/venv.html) (recommended);
+ [virtual environment](https://docs.python.org/3/tutorial/venv.html) (recommended when running Ansible locally);
 3. Install the requirements 
 
     ```
     pip install -r requirements.txt
     ```
     
-At this point you are ready to execute the playbooks. 
+At this point you are ready to execute the playbooks.
 
 
 ## Usage
