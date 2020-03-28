@@ -28,7 +28,7 @@ corresponding remote devices.
 Example:
 
 ```
-ansible-playbook pb_provision_ebgp_underlay.yml -i invenotry/hosts.ini -t push_config
+ansible-playbook pb_provision_ebgp_underlay.yml -i inventory/hosts.ini -t push_config
 
 ```
 
@@ -46,7 +46,7 @@ inventory
 Your `hosts.ini` initially looks like this
 
 ```
-# invenotry/hosts.ini
+# inventory/hosts.ini
 
 router-1
 router-2
@@ -60,7 +60,7 @@ router-6
 the EBGP underaly:
 
     ```
-    # invenotry/hosts.ini 
+    # inventory/hosts.ini 
     
     router-4
     router-5
@@ -75,7 +75,7 @@ the EBGP underaly:
 2. Run the playbook with no further inputs:
 
     ```
-    ansible-playbook pb_provision_ebgp_underlay.yml -i invenotry/hosts.ini
+    ansible-playbook pb_provision_ebgp_underlay.yml -i inventory/hosts.ini
     ```
     
 
@@ -183,7 +183,7 @@ The Autonomous System Numbers (ASNs) are generated incrementally starting from a
 You can change the seed value by modifying the variable `asn_start`. 
 Example:
 ```yaml
-# invenotry/group_vars/all.yml
+# inventory/group_vars/all.yml
 
 asn_start: 65001
 ```
@@ -192,7 +192,7 @@ Each link will also be configured with a different IP subnet. By default the fir
 You can use a different subnet by modifying the variable `ip_subnet_start`. Example:
 
 ```yaml
-# invenotry/group_vars/all.yml
+# inventory/group_vars/all.yml
 
 ip_subnet_start: "20.20.0.0/24"
 ```
