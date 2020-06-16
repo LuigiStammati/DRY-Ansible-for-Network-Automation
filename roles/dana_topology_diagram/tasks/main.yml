@@ -18,6 +18,6 @@
   run_once: true
 
 - name: Export topology file in PDF
-  command: "dot -Tpdf {{ dana_topology_diagram_dir }}/topology_diagram.dot -o {{ dana_topology_diagram_dir }}/topology_diagram.pdf"
+  command: "dot -Tpdf '{{ dana_topology_diagram_dir }}/topology_diagram.dot -o {{ dana_topology_diagram_dir }}/topology_diagram.pdf'"
   delegate_to: "localhost"
   run_once: true
