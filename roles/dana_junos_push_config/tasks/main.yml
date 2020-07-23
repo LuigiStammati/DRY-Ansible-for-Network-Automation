@@ -23,6 +23,7 @@
   juniper_junos_config:
     load: "{{ loading_option }}"
     src: "{{ config_file.files[0].path }}"
+    timeout: "{{ commit_timeout }}"
   register: ssh_load_response
   when: netconf_status_response is succeeded
 
@@ -35,6 +36,7 @@
     password: "{{ telnet_password }}"
     load: "{{ loading_option }}"
     src: "{{ config_file.files[0].path }}"
+    timeout: "{{ commit_timeout }}"
   register: response
   when: netconf_status_response is failed or ssh_load_response is failed
 

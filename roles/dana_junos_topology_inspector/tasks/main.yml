@@ -26,6 +26,7 @@
         load: "set"
         # The description is removed if present, otherwise it overlaps the LLDP remote interface name
         ignore_warning: yes
+        timeout: "{{ commit_timeout }}"
         vars:
           active_interfaces: "{{ active_interfaces }}"
       register: interface_description_response
@@ -44,6 +45,7 @@
         template: "{{ role_path }}/templates/dummy_unit_0.j2"
         load: "set"
         ignore_warning: yes
+        timeout: "{{ commit_timeout }}"
         vars:
           active_interfaces: "{{ active_interfaces }}"
       register: dummy_unit_response
@@ -59,6 +61,7 @@
       juniper_junos_config:
         template: "{{ role_path }}/templates/lldp.j2"
         load: "set"
+        timeout: "{{ commit_timeout }}"
         vars:
           # vars must always be passed otherwise it complains
           dummy: ""
@@ -113,4 +116,5 @@
     - name: Cleanup LLDP config and dummy unit 0
       juniper_junos_config:
         rollback: "{{ rollback_counter }}"
+        timeout: "{{ commit_timeout }}"
       when: rollback_counter|int > 0

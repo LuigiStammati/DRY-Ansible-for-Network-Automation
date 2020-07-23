@@ -59,6 +59,9 @@ will be included in the result, ignoring any possible aggregate bundle configure
 
 * `lldp_convergence_time` (default `5`) Seconds to wait after enabling LLDP before retrieving neighbours info.
 
+* `commit_timeout` (default `30`) Timeout value when the configuration is committed. Refer to the `timeout` option in the
+ _Junos_junos_config_ documentation for more details. 
+
 Example Playbook
 ----------------
 

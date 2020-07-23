@@ -30,7 +30,8 @@ telnet connection if the first SSH connection fails. Useful to push the initial 
 not configured with SSH yet (for example _zeroized_ devices)
 * `prefix_filter_label` (default `null`): an optional string. If provided, only configuration files starting with 
 this prefix will be looked up in the folder;
-
+* `commit_timeout` (default `30`) Timeout value when the configuration is committed. Refer to the `timeout` option in the
+ _Junos_junos_config_ documentation for more details. 
 
 Example Playbook
 ----------------

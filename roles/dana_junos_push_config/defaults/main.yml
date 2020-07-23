@@ -12,3 +12,5 @@ telnet_password: ""
 
 # Lookup config file names that start with this prefix if provided
 prefix_filter_label: null
+
+commit_timeout: 30

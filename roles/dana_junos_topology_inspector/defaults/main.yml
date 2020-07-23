@@ -13,3 +13,5 @@ consider_aggregate: yes
 
 # Seconds to wait after enabling LLDP before retrieving neighbours info
 lldp_convergence_time: 5
+
+commit_timeout: 30
