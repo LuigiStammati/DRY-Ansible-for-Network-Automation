@@ -4,7 +4,7 @@ protocols {
             interface lo0.0 passive;
             {% for interface in topology_interfaces%}
 
-            interface {{ interface.name }}.0 {
+            interface {{ interface.name }}.{{ interface.unit }} {
             interface-type p2p;
             }
 

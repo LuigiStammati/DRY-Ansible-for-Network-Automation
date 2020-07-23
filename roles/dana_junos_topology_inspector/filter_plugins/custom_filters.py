@@ -298,11 +298,13 @@ class FilterModule(object):
                         if l["source"]["node"]["name"] == device or l["target"]["node"]["name"] == device]
 
         # Start from the source interfaces
-        device_interfaces = [{"name": link['source']['interface']['name']}
+        device_interfaces = [{"name": link['source']['interface']['name'],
+                              "unit": link['source']['interface']['unit']}
                              for link in device_links if link["source"]["node"]["name"] == device]
 
         # Add the target interfaces
-        device_interfaces.extend([{"name": link['target']['interface']['name']}
+        device_interfaces.extend([{"name": link['target']['interface']['name'],
+                                   "unit": link['target']['interface']['unit']}
                                   for link in device_links if link["target"]["node"]["name"] == device])
 
         return device_interfaces
