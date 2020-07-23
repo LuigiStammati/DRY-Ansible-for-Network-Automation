@@ -27,6 +27,8 @@ Role Variables
 * __config_label__ (default `null`): optional string label you may want to include in the file name.
 * __include_timestamp__ (default `yes`): by default, the current timestamp is included in the file name. You can 
 exclude it by setting this variable to `no`.
+* __config_format__ (default `text`): the configuration format. Options are _text_, _set_, _json_, _xml_. Refer to the 
+official documentation of option _format_ in the _Juniper_junos_config_ module for more details.
 
 Example Playbook
 ----------------

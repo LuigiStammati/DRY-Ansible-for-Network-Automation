@@ -5,6 +5,10 @@ Playbook name: pb_backup_config.yml
 This playbook retrieves all the active configurations of target devices and collects them in a local backup folder.
 Configuration files are named with the corresponding device hostname, along with an optional timestamp and label.
 
+
+By default, configuration files are retrieved in _text_ format. You can select a different format 
+(among text, set, json and xml) by overriding the variable `config_format`
+
 ## Requirements and Role Dependencies 
 
 This Playbook relies on the following roles
