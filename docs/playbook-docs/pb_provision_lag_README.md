@@ -87,18 +87,24 @@ chassis {
 
 interfaces {
     xe-0/0/0 {
-       ether-options {
+       gigether-options {
            802.3ad ae0;
        }
     }
     
     xe-0/0/1 {
-       ether-options {
+       gigether-options {
            802.3ad ae0;
        }
     }
     
     ae0 {
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+                }
+            }
         unit 0;
     }
 }
@@ -106,8 +112,17 @@ interfaces {
 The other device would have a similar configuration, with interface names possibly different.
  
 Note that the aggregated interface `ae0` only contains an empty `unit 0`. The reason is that the major goal of the playbook 
-is not to configure the aggregate itself, it is rather to automatically figure out which child interfaces must be 
+is not to provision the aggregated interface itself, but rather to automatically figure out which child interfaces must be 
 bundle together and generate the corresponding configuration. 
+
+The __lacp__ protocol is configured on the aggregated interface by default. If this is not a requirement, you can 
+set the variable `enable_lacp`:
+
+```
+# inventory/group_vars/all.yml
+
+enable_lacp: no
+```
   
 After that, the aggregated interface will be available to be further configured either via CLI or using other playbooks.
 
@@ -151,34 +166,46 @@ chassis {
 
 interfaces {
     xe-0/0/0 {
-       ether-options {
+       gigether-options {
            802.3ad ae0;
        }
     }
     
     xe-0/0/1 {
-       ether-options {
+       gigether-options {
            802.3ad ae0;
        }
     }
     
     xe-0/0/2 {
-       ether-options {
+       gigether-options {
            802.3ad ae44;
        }
     }
     
     xe-0/0/3 {
-       ether-options {
+       gigether-options {
            802.3ad ae44;
        }
     }
     
     ae0 {
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+                }
+            }
         unit 0;
     }
     
     ae44 {
+        aggregated-ether-options {
+            lacp {
+                active;
+                periodic fast;
+                }
+            }
         unit 0;
     }
 }

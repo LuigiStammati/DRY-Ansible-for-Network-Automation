@@ -16,13 +16,21 @@ interfaces {
 {{ link[ns.endpoint_label].interface.name }} {
 
 {# Use the number at the end of the bundle name as aggregated interface number#}
-   ether-options {
+   gigether-options {
        802.3ad ae{{ bundle_group_name.split('lag_bundle_')[1] }};
    }
 }
 {% endfor %}
 
 ae{{ bundle_group_name.split('lag_bundle_')[1] }} {
+    {% if enable_lacp|bool %}
+    aggregated-ether-options {
+        lacp {
+            active;
+            periodic fast;
+        }
+    }
+    {% endif %}
     unit 0;
 }
 {% endfor %}

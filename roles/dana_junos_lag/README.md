@@ -26,6 +26,7 @@ Role Variables
 the directory in which configuration files will be saved. By default, it's a folder
 called `_lag_configs` within the inventory file. If the folder specified does 
 not exist, the role will create it automatically.
+* `enable_lacp` (default "yes"): If yes, LACP will also be configured on the aggregated interface.
 
 
 Example Playbook
