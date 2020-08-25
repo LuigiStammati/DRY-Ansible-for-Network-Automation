@@ -4,7 +4,7 @@
 - name: Find config file to be loaded
   find:
     paths: "{{ built_configs_dir }}"
-    patterns: "{{ prefix_filter_label if prefix_filter_label != None else '' }}*{{ inventory_hostname }}.conf"
+    patterns: "{{ prefix_filter_label if prefix_filter_label != None else '' }}*{{ device_name }}.conf"
   register: config_file
 
 - name: Print the config file
