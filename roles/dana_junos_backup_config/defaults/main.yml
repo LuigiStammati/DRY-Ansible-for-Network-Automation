@@ -4,4 +4,5 @@ backup_config_dir: "{{ inventory_dir }}/_backup_configs"
 config_label: null
 include_timestamp: yes
 
+device_name: "{{ inventory_hostname_short }}"
 config_format: "text"

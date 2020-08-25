@@ -10,4 +10,4 @@
   juniper_junos_config:
     retrieve: "committed"
     format: "{{ config_format }}"
-    dest: "{{ backup_config_dir }}/{{ config_label + '.' if config_label != None else '' }}{{ lookup('pipe','date \"+%Y-%m-%d_%H%M\"') + '.' if include_timestamp|bool else '' }}{{ inventory_hostname }}.conf"
+    dest: "{{ backup_config_dir }}/{{ config_label + '.' if config_label != None else '' }}{{ lookup('pipe','date \"+%Y-%m-%d_%H%M\"') + '.' if include_timestamp|bool else '' }}{{ device_name }}.conf"
