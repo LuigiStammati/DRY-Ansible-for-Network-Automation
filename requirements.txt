@@ -6,7 +6,7 @@ cffi==1.12.3
 cryptography==2.7
 enum34==1.1.6
 ipaddress==1.0.22
-Jinja2==2.10.1
+Jinja2==2.11.3
 junos-eznc==2.2.1
 jxmlease==1.0.1
 lxml==4.3.4
