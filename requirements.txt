@@ -9,7 +9,7 @@ ipaddress==1.0.22
 Jinja2==2.10.1
 junos-eznc==2.2.1
 jxmlease==1.0.1
-lxml==4.3.4
+lxml==4.9.1
 MarkupSafe==1.1.1
 ncclient==0.6.6
 netaddr==0.7.19
